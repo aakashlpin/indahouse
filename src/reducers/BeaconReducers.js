@@ -14,9 +14,17 @@ export function beacon (state = initialState, action) {
   switch (action.type) {
     case ActionTypes.HANDLE_BEACON_UPDATES: {
       const { beacon } = action.payload;
+      const beaconProps = beacon.beacons[0];
+      //    .uuid
+      //    .major - The major version of a beacon
+      //    .minor - The minor version of a beacon
+      //    .rssi - Signal strength: RSSI value (between -100 and 0)
+      //    .proximity - Proximity value, can either be "unknown", "far", "near" or "immediate"
+      //    .accuracy - The accuracy of a beacon
+
       return {
         ...state,
-        props: beacon.beacons[0]
+        props: beaconProps
       }
     }
 
