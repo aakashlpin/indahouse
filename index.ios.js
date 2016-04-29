@@ -19,6 +19,49 @@ var Beacons = require('react-native-ibeacon');
 
 import {GoogleSignin, GoogleSigninButton} from 'react-native-google-signin';
 
+import indahouse from './src/components/Container';
+
+// var PushNotification = require('react-native-push-notification');
+//
+// PushNotification.configure({
+//
+//   // (optional) Called when Token is generated (iOS and Android)
+//   onRegister: function(token) {
+//     console.log( 'TOKEN:', token );
+//   },
+//
+//   // (required) Called when a remote or local notification is opened or received
+//   onNotification: function(notification) {
+//     console.log( 'NOTIFICATION:', notification );
+//   },
+//
+//   // IOS ONLY (optional): default: all - Permissions to register.
+//   permissions: {
+//     alert: true,
+//     badge: true,
+//     sound: true
+//   },
+//
+//   // Should the initial notification be popped automatically
+//   // default: true
+//   popInitialNotification: false,
+//
+//   /**
+//     * IOS ONLY: (optional) default: true
+//     * - Specified if permissions will requested or not,
+//     * - if not, you must call PushNotificationsHandler.requestPermissions() later
+//     */
+//   requestPermissions: true,
+// });
+//
+// PushNotification.checkPermissions((permissions) => {
+//   console.log(permissions);
+// })
+//
+// PushNotification.localNotification({
+//   message: "Welcome to Instamojo" // (required)
+// });
+
 // Define a region which can be identifier + uuid,
 // identifier + uuid + major or identifier + uuid + major + minor
 // (minor and major properties are numbers)
@@ -94,81 +137,5 @@ GoogleSignin.configure({
   offlineAccess: true
 });
 
-class indahouse extends Component {
-  constructor () {
-    super();
-    this.state = {
-      loading: true,
-      user: null
-    };
-  }
-
-  componentDidMount () {
-    const user = GoogleSignin.currentUser();
-    this.setState({user: user});
-  }
-
-  _signIn () {
-    GoogleSignin.signIn()
-      .then((user) => {
-        console.log(user);
-        this.setState({user: user});
-      })
-      .catch((err) => {
-        console.log('WRONG SIGNIN', err);
-      })
-      .done();
-  }
-
-  _renderSigninButton () {
-    return (
-      <GoogleSigninButton
-        style={{width: 48, height: 48}}
-        size={GoogleSigninButton.Size.Icon}
-        color={GoogleSigninButton.Color.Dark}
-        onPress={this._signIn.bind(this)}
-      />
-    )
-  }
-
-  _renderApp () {
-    return (
-      <View>
-        <Text>{this.state.user.name}</Text>
-      </View>
-
-    )
-  }
-
-  render() {
-    return (
-      <View style={styles.container}>
-        {
-          this.state.user ?
-            this._renderApp() : this._renderSigninButton()
-        }
-      </View>
-    );
-  }
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
 
 AppRegistry.registerComponent('indahouse', () => indahouse);
