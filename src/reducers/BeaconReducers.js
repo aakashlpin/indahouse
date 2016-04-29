@@ -7,7 +7,10 @@ const initialState = {
     uuid: IMOJO_BEACON_UUID,
     major: 4660,
     minor: 64001
-  }
+  },
+  isSpotMarked: false,
+  isMarkingRegion: false,
+  timePending: 30
 };
 
 export function beacon (state = initialState, action) {
@@ -22,13 +25,40 @@ export function beacon (state = initialState, action) {
       //    .proximity - Proximity value, can either be "unknown", "far", "near" or "immediate"
       //    .accuracy - The accuracy of a beacon
 
+      if (state.isMarkingRegion) {
+        // consider all these updates for marking the position of user
+        //
+      }
+
       return {
         ...state,
         props: beaconProps
       }
     }
 
+    case ActionTypes.HANDLE_IS_MARKING_SPOT: {
+      return {
+        ...state,
+        isMarkingRegion: true
+      }
+    }
+
+    case ActionTypes.HANDLE_STOP_MARKING_SPOT: {
+      return {
+        ...state,
+        isMarkingRegion: false
+      }
+    }
+
+    case ActionTypes.HANDLE_UPDATE_TIME_PENDING: {
+      return {
+        ...state,
+        timePending: state.timePending - 1
+      }
+    }
+
     default: {
+      // TODO mark the isSpotMarked by checking in the db
       return state;
     }
   }

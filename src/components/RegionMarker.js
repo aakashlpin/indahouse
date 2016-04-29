@@ -1,12 +1,14 @@
 import React, {
   View,
-  Text
+  Text,
+  TouchableHighlight
 } from 'react-native';
 
 import { connect } from 'react-redux';
 
 import {
-  handleBeaconUpdates
+  handleBeaconUpdates,
+  initializeNormalizingSpot
 } from '../actions/BeaconActions';
 
 const { DeviceEventEmitter } = React;
@@ -31,12 +33,33 @@ class RegionMarker extends React.Component {
       });
   }
 
+  _onPressMarkSpot () {
+    console.log('_onPressMarkSpot')
+  }
+
+  _onPressMarkSpot () {
+    this.props.initializeNormalizingSpot();
+  }
+
   render () {
-    const { props } = this.props.beacon;
+    const { props, isMarkingRegion } = this.props.beacon;
+
+    if (isMarkingRegion) {
+      const { timePending } = this.props.beacon;
+      return (
+        <View>
+          <Text>Please Wait..</Text>
+          <Text>{timePending} seconds</Text>
+        </View>
+      )
+    }
+
     return (
-      <View>
-        <Text>{props.accuracy} meters</Text>
-      </View>
+      <TouchableHighlight onPress={() => this._onPressMarkSpot()}>
+        <View style={{width: 250, height: 60, backgroundColor: '#1990B8', flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+          <Text style={{margin:30, textAlign: 'center', color: '#fff', fontSize: 24}}>This is my spot!</Text>
+        </View>
+      </TouchableHighlight>
     )
   }
 }
@@ -49,5 +72,6 @@ function mapStateToProps (state) {
 }
 
 export default connect(mapStateToProps, {
-  handleBeaconUpdates
+  handleBeaconUpdates,
+  initializeNormalizingSpot
 })(RegionMarker);
