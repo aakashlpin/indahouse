@@ -1,10 +1,31 @@
 
 export const HANDLE_BEACON_UPDATES = 'HANDLE_BEACON_UPDATES';
+export const HANDLE_MARK_NOTIFIED_PUBLICLY = 'HANDLE_MARK_NOTIFIED_PUBLICLY';
 export function handleBeaconUpdates (beacon) {
-  return {
-    type: HANDLE_BEACON_UPDATES,
-    payload: {
-      beacon
+  return (dispatch, getState) => {
+    dispatch({
+      type: HANDLE_BEACON_UPDATES,
+      payload: {
+        beacon
+      }
+    });
+
+    if (!getState().beacon.isNotifiedPublicly) {
+      fetch('https://hooks.slack.com/services/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', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          channel: '#in-da-house',
+          text: `${getState().auth.user.name} is in the house 🎉`,
+        })
+      });
+
+      dispatch({
+        type: HANDLE_MARK_NOTIFIED_PUBLICLY
+      })
     }
   }
 }
@@ -19,7 +40,6 @@ export function initializeNormalizingSpot () {
     });
 
     const c = setInterval(() => {
-      console.log(getState().beacon);
       if (!getState().beacon.timePending) {
         clearInterval(c);
         return dispatch({
@@ -31,5 +51,12 @@ export function initializeNormalizingSpot () {
         type: HANDLE_UPDATE_TIME_PENDING
       })
     }, 1000);
+  }
+}
+
+export const HANDLE_USER_HAPPY_WITH_SPOT = 'HANDLE_USER_HAPPY_WITH_SPOT';
+export function markUserHappyWithSpot () {
+  return {
+    type: HANDLE_USER_HAPPY_WITH_SPOT
   }
 }

@@ -8,7 +8,8 @@ import { connect } from 'react-redux';
 
 import {
   handleBeaconUpdates,
-  initializeNormalizingSpot
+  initializeNormalizingSpot,
+  markUserHappyWithSpot
 } from '../actions/BeaconActions';
 
 const { DeviceEventEmitter } = React;
@@ -34,22 +35,51 @@ class RegionMarker extends React.Component {
   }
 
   _onPressMarkSpot () {
-    console.log('_onPressMarkSpot')
+    this.props.initializeNormalizingSpot();
   }
 
-  _onPressMarkSpot () {
+  _gotoDashboard () {
+    this.props.markUserHappyWithSpot();
+  }
+
+  _recalibrate () {
     this.props.initializeNormalizingSpot();
   }
 
   render () {
-    const { props, isMarkingRegion } = this.props.beacon;
+    const { props, isMarkingRegion, isSpotMarked } = this.props.beacon;
+
+    if (isSpotMarked) {
+      const { spotAccuracy } = this.props.beacon;
+      return (
+        <View style={{width: 300, flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <View style={{marginBottom: 40}}>
+            <Text>Your spot is</Text>
+            <Text style={{fontSize: 40}}>~{spotAccuracy}m</Text>
+            <Text>from beacon</Text>
+          </View>
+
+          <TouchableHighlight onPress={() => this._gotoDashboard()}>
+            <View style={{width: 200, height: 48, backgroundColor: '#1990B8', flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+              <Text style={{textAlign: 'center', color: '#fff', fontSize: 16, fontWeight: 'bold'}}>Looks Good!</Text>
+            </View>
+          </TouchableHighlight>
+
+          <TouchableHighlight onPress={() => this._recalibrate()}>
+            <View style={{width: 200, height: 48, flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+              <Text style={{textAlign: 'center', fontSize: 16, color: '#1990B8'}}>Recalibrate</Text>
+            </View>
+          </TouchableHighlight>
+        </View>
+      )
+    }
 
     if (isMarkingRegion) {
       const { timePending } = this.props.beacon;
       return (
-        <View>
-          <Text>Please Wait..</Text>
-          <Text>{timePending} seconds</Text>
+        <View style={{width: 300, flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Text>Calibrating your device..</Text>
+          <Text style={{fontSize: 40}}>{timePending}s</Text>
         </View>
       )
     }
@@ -73,5 +103,6 @@ function mapStateToProps (state) {
 
 export default connect(mapStateToProps, {
   handleBeaconUpdates,
-  initializeNormalizingSpot
+  initializeNormalizingSpot,
+  markUserHappyWithSpot
 })(RegionMarker);

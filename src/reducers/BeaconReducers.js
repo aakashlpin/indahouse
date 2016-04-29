@@ -10,7 +10,11 @@ const initialState = {
   },
   isSpotMarked: false,
   isMarkingRegion: false,
-  timePending: 30
+  timePending: 30,
+  accuracies: [],
+  spotAccuracy: null,
+  isUserHappyWithSpot: false,
+  isNotifiedPublicly: false
 };
 
 export function beacon (state = initialState, action) {
@@ -25,15 +29,21 @@ export function beacon (state = initialState, action) {
       //    .proximity - Proximity value, can either be "unknown", "far", "near" or "immediate"
       //    .accuracy - The accuracy of a beacon
 
-      if (state.isMarkingRegion) {
-        // consider all these updates for marking the position of user
-        //
-      }
-
-      return {
+      let reduceTo = {
         ...state,
         props: beaconProps
+      };
+
+      if (state.isMarkingRegion) {
+        // consider all these updates for marking the position of user
+        console.log(beaconProps.accuracy);
+        reduceTo = {
+          ...reduceTo,
+          accuracies: [...state.accuracies, beaconProps.accuracy]
+        }
       }
+
+      return reduceTo;
     }
 
     case ActionTypes.HANDLE_IS_MARKING_SPOT: {
@@ -44,16 +54,43 @@ export function beacon (state = initialState, action) {
     }
 
     case ActionTypes.HANDLE_STOP_MARKING_SPOT: {
+      const { accuracies } = state;
+
+      const legitAccuracies = accuracies.filter(accuracy => accuracy > 0);
+      let sum = 0;
+      for (let i = 0; i < legitAccuracies.length; i++) {
+        sum += legitAccuracies[i];
+      }
+
+      const spotAccuracy = Math.ceil(sum / legitAccuracies.length);
+
       return {
         ...state,
-        isMarkingRegion: false
-      }
+        isMarkingRegion: false,
+        isSpotMarked: true,
+        timePending: 30,
+        spotAccuracy,
+      };
     }
 
     case ActionTypes.HANDLE_UPDATE_TIME_PENDING: {
       return {
         ...state,
         timePending: state.timePending - 1
+      }
+    }
+
+    case ActionTypes.HANDLE_USER_HAPPY_WITH_SPOT: {
+      return {
+        ...state,
+        isUserHappyWithSpot: true
+      }
+    }
+
+    case ActionTypes.HANDLE_MARK_NOTIFIED_PUBLICLY: {
+      return {
+        ...state,
+        isNotifiedPublicly: true
       }
     }
 

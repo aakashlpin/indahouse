@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, AsyncStorage } from 'react-native';
 import { Provider } from 'react-redux';
 import ConfigStore from '../store/ConfigStore';
 import App from './App';

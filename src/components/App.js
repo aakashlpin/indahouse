@@ -18,6 +18,7 @@ import {
 } from '../actions/AuthActions';
 
 import RegionMarker from './RegionMarker';
+import Dashboard from './Dashboard';
 
 GoogleSignin.configure({
   iosClientId: '489906414923-l8drtch2c8dknhj28pdhffdosnjs50l7.apps.googleusercontent.com',
@@ -62,7 +63,11 @@ class indahouse extends Component {
         {
           this.props.auth.user ? (
             <View>
-              <RegionMarker />
+              {
+                this.props.beacon.isUserHappyWithSpot ? (
+                  <Dashboard />
+                ) : <RegionMarker />
+              }
             </View>
           ) : this._renderSigninButton()
         }
@@ -72,9 +77,10 @@ class indahouse extends Component {
 }
 
 function mapStateToProps (state) {
-  const { auth } = state;
+  const { auth, beacon } = state;
   return {
-    auth
+    auth,
+     beacon
   }
 }
 
