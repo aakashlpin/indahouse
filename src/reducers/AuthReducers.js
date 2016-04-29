@@ -7,6 +7,7 @@ const initialState = {
 export function auth (state = initialState, action) {
   switch (action.type) {
     case ActionTypes.HANDLE_AUTH_SUCCESS: {
+      console.log('ActionTypes.HANDLE_AUTH_SUCCESS');
       const { user } = action.payload;
       return {
         ...state,
@@ -15,7 +16,7 @@ export function auth (state = initialState, action) {
     }
 
     default: {
-      return initialState;
+      return state;
     }
   }
 }

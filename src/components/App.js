@@ -17,6 +17,14 @@ import {
   handleAuthSuccess
 } from '../actions/AuthActions';
 
+import RegionMarker from './RegionMarker';
+
+GoogleSignin.configure({
+  iosClientId: '489906414923-l8drtch2c8dknhj28pdhffdosnjs50l7.apps.googleusercontent.com',
+  webClientId: '489906414923-2fgju83qvpaottk7igjarir5uh1rkopd.apps.googleusercontent.com',
+  offlineAccess: true
+});
+
 class indahouse extends Component {
   componentDidMount () {
     GoogleSignin.currentUserAsync().then((user) => {
@@ -48,21 +56,15 @@ class indahouse extends Component {
     )
   }
 
-  _renderApp () {
-    return (
-      <View>
-        <Text>{this.props.auth.user.name}</Text>
-      </View>
-
-    )
-  }
-
   render() {
     return (
       <View style={styles.container}>
         {
-          this.props.auth.user ?
-            this._renderApp() : this._renderSigninButton()
+          this.props.auth.user ? (
+            <View>
+              <RegionMarker />
+            </View>
+          ) : this._renderSigninButton()
         }
       </View>
     );
