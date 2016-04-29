@@ -62,7 +62,7 @@ export function beacon (state = initialState, action) {
         sum += legitAccuracies[i];
       }
 
-      const spotAccuracy = Math.ceil(sum / legitAccuracies.length);
+      const spotAccuracy = Math.floor(sum / legitAccuracies.length);
 
       return {
         ...state,
